@@ -10,6 +10,9 @@
 
 #include <ue/app/task.hpp>
 #include <ue/nas/task.hpp>
+
+#include <ue/nas/mm/mm.hpp>
+
 #include <ue/rls/task.hpp>
 #include <ue/rrc/task.hpp>
 #include <ue/tun/task.hpp>
@@ -171,6 +174,13 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
             sendResult(msg.address, "De-registration procedure triggered");
         else
             sendResult(msg.address, "De-registration procedure triggered. UE device will be switched off.");
+        break;
+    }
+    case app::UeCliCommand::SEND_AUTH_FAIL_SYNC_FAIL: {
+        // Send Authentication Failure
+        nas::AuthenticationFailure resp{};
+        resp.mmCause.value = nas::EMmCause::SYNCH_FAILURE;
+        m_base->nasTask->mm->sendNasMessage(resp);
         break;
     }
     case app::UeCliCommand::PS_RELEASE: {
