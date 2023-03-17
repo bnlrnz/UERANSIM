@@ -177,10 +177,10 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
         break;
     }
     case app::UeCliCommand::SEND_AUTH_FAIL_SYNC_FAIL: {
-        // Send Authentication Failure
         nas::AuthenticationFailure resp{};
         resp.mmCause.value = nas::EMmCause::SYNCH_FAILURE;
         m_base->nasTask->mm->sendNasMessage(resp);
+        sendResult(msg.address, "Sent Authentication Failure message with cause: Synchronization Failure");
         break;
     }
     case app::UeCliCommand::PS_RELEASE: {
