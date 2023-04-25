@@ -165,7 +165,7 @@ static OrderedMap<std::string, CmdEntry> g_ueCmdEntries = {
     {"ps-list", {"List all PDU sessions", "", DefaultDesc, false}},
     {"ps-release", {"Trigger a PDU session release procedure", "<pdu-session-id>...", DefaultDesc, true}},
     {"ps-release-all", {"Trigger PDU session release procedures for all active sessions", "", DefaultDesc, false}},
-    {"auth_fail_sync_fail", {"Sends authentication failure message with cause synchronisation failure", "", DefaultDesc, false}},
+    {"auth_fail_sync_fail", {"Sends unsolicited authentication failure message with cause synchronisation failure", "", DefaultDesc, false}},
     {"deregister",
      {"Perform a de-registration by the UE", "<normal|disable-5g|switch-off|remove-sim>", DefaultDesc, true}},
 };

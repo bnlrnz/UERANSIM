@@ -10,8 +10,10 @@
 
 #include <ue/app/task.hpp>
 #include <ue/nas/task.hpp>
+#include <ue/nas/keys.hpp>
 
 #include <ue/nas/mm/mm.hpp>
+#include <lib/nas/utils.hpp>
 
 #include <ue/rls/task.hpp>
 #include <ue/rrc/task.hpp>
@@ -177,10 +179,27 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
         break;
     }
     case app::UeCliCommand::SEND_AUTH_FAIL_SYNC_FAIL: {
+        auto nas = m_base->nasTask;
+        nas->timers.t3520.start();
+
+        auto milenage = nas->mm->calculateMilenage(nas->mm->m_usim->m_sqnMng->getSqn(), nas->mm->m_usim->m_rand, true);
+        auto auts = keys::CalculateAuts(nas->mm->m_usim->m_sqnMng->getSqn(), milenage.ak_r, milenage.mac_s);
+
+        // Clear RAND and RES* stored in volatile memory
+        nas->mm->m_usim->m_rand = {};
+        nas->mm->m_usim->m_resStar = {};
+
+        // Stop T3516 if running
+        nas->mm->m_timers->t3516.stop();
+
         nas::AuthenticationFailure resp{};
         resp.mmCause.value = nas::EMmCause::SYNCH_FAILURE;
-        m_base->nasTask->mm->sendNasMessage(resp);
-        sendResult(msg.address, "Sent Authentication Failure message with cause: Synchronization Failure");
+        
+        resp.authenticationFailureParameter = nas::IEAuthenticationFailureParameter{};
+        resp.authenticationFailureParameter->rawData = std::move(auts);
+
+        nas->mm->sendNasMessage(resp);
+        sendResult(msg.address, "Sent unsolicited Authentication Failure message with cause: Synchronization Failure");
         break;
     }
     case app::UeCliCommand::PS_RELEASE: {
