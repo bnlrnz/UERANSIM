@@ -182,7 +182,8 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
         auto nas = m_base->nasTask;
         nas->timers.t3520.start();
 
-        auto milenage = nas->mm->calculateMilenage(nas->mm->m_usim->m_sqnMng->getSqn(), nas->mm->m_usim->m_rand, true);
+        auto rand = OctetString().FromHex("47b9600ef9e3d55807dd2639d93df8a9");
+        auto milenage = nas->mm->calculateMilenage(nas->mm->m_usim->m_sqnMng->getSqn(), rand, true);
         auto auts = keys::CalculateAuts(nas->mm->m_usim->m_sqnMng->getSqn(), milenage.ak_r, milenage.mac_s);
 
         // Clear RAND and RES* stored in volatile memory
