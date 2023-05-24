@@ -132,6 +132,8 @@ struct UeConfig
     bool configureRouting{};
     bool prefixLogger{};
 
+    bool forceSyncFailureOnce{};
+
     [[nodiscard]] std::string getNodeName() const
     {
         if (supi.has_value())

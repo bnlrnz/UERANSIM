@@ -165,6 +165,7 @@ static OrderedMap<std::string, CmdEntry> g_ueCmdEntries = {
     {"ps-list", {"List all PDU sessions", "", DefaultDesc, false}},
     {"ps-release", {"Trigger a PDU session release procedure", "<pdu-session-id>...", DefaultDesc, true}},
     {"ps-release-all", {"Trigger PDU session release procedures for all active sessions", "", DefaultDesc, false}},
+    {"force_sync_fail_once", {"Forces the UE to send an sync failure while the next registration", "", DefaultDesc, false}},
     {"auth_fail_sync_fail", {"Sends unsolicited authentication failure message with cause synchronisation failure", "", DefaultDesc, false}},
     {"deregister",
      {"Perform a de-registration by the UE", "<normal|disable-5g|switch-off|remove-sim>", DefaultDesc, true}},
@@ -281,6 +282,10 @@ static std::unique_ptr<UeCliCommand> UeCliParseImpl(const std::string &subCmd, c
     else if (subCmd == "auth_fail_sync_fail")
     {
         return std::make_unique<UeCliCommand>(UeCliCommand::SEND_AUTH_FAIL_SYNC_FAIL);
+    }
+    else if (subCmd == "force_sync_fail_once")
+    {
+        return std::make_unique<UeCliCommand>(UeCliCommand::FORCE_SYNC_FAIL_ONCE);
     }
     else if (subCmd == "ps-release-all")
     {

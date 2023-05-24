@@ -54,6 +54,7 @@ struct UeCliCommand
         PS_RELEASE_ALL,
         PS_LIST,
         DE_REGISTER,
+        FORCE_SYNC_FAIL_ONCE,
         SEND_AUTH_FAIL_SYNC_FAIL,
         RLS_STATE,
         COVERAGE,

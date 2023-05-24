@@ -136,6 +136,7 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
             {"stored-suci", ToJson(m_base->nasTask->mm->m_storage->storedSuci->get())},
             {"stored-guti", ToJson(m_base->nasTask->mm->m_storage->storedGuti->get())},
             {"has-emergency", ::ToJson(m_base->nasTask->mm->hasEmergency())},
+            {"will-sync-fail-once", m_base->config->forceSyncFailureOnce},
         });
         sendResult(msg.address, json.dumpYaml());
         break;
@@ -176,6 +177,11 @@ void UeCmdHandler::handleCmdImpl(NmUeCliCommand &msg)
             sendResult(msg.address, "De-registration procedure triggered");
         else
             sendResult(msg.address, "De-registration procedure triggered. UE device will be switched off.");
+        break;
+    }
+    case app::UeCliCommand::FORCE_SYNC_FAIL_ONCE: {
+        m_base->config->forceSyncFailureOnce = true;
+        sendResult(msg.address, "The next registration/authentication procedure will trigger a Sync Failure");
         break;
     }
     case app::UeCliCommand::SEND_AUTH_FAIL_SYNC_FAIL: {

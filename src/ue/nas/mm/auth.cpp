@@ -488,6 +488,12 @@ EAutnValidationRes NasMm::validateAutn(const OctetString &rand, const OctetStrin
     auto milenage = calculateMilenage(m_usim->m_sqnMng->getSqn(), rand, false);
     OctetString receivedSQN = OctetString::Xor(receivedSQNxorAK, milenage.ak);
 
+    // Force sync failure if requested
+    if (m_base->config->forceSyncFailureOnce) {
+        m_base->config->forceSyncFailureOnce = false;
+        return EAutnValidationRes::SYNCHRONISATION_FAILURE;
+    }
+
     // Verify that the received sequence number SQN is in the correct range
     if (!m_usim->m_sqnMng->checkSqn(receivedSQN))
         return EAutnValidationRes::SYNCHRONISATION_FAILURE;
